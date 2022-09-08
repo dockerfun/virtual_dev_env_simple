@@ -17,10 +17,10 @@ services:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 3306
-  frontend:
+  proxy
     build: frontend-app
     ports:
-      - 80:80
+      - 8080:80
     depends_on:
       - backend
 volumes:
