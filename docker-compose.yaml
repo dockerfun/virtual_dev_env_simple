@@ -1,7 +1,8 @@
-version: '3.7'
+version: "3.8"
 services:
   backend:
     build: my-backend
+    target: development
     secrets:
       - db-password
     depends_on:
@@ -24,8 +25,6 @@ services:
       - 80:80
     depends_on:
       - backend
-volumes:
-  db-data:
 secrets:
   db-password:
     file: db/password.txt
