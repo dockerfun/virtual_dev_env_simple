@@ -1,0 +1,7 @@
+CREATE TABLE user
+( ID INT(11) NOT NULL AUTO_INCREMENT,
+  last_name VARCHAR(30) NOT NULL,
+  first_name VARCHAR(25),
+  birthday DATE,
+  CONSTRAINT user_pk PRIMARY KEY (ID)
+);
