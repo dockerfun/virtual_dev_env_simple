@@ -1,0 +1,77 @@
+<div class="container pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <div class="row">
+    <h2>User table</h2>
+  </div> 
+  <div class="row pull-left">
+      <div class="col-xs-12">
+          <button class="btn btn-success" (click)="newUser(template)">Insert New</button>   
+      </div>
+  </div>
+  <br />
+  <div class="row">
+      <div class="col-xs-12">
+          <table class="table">
+              <thead class="thead-dark">
+                  <tr>
+                  <th class="text-center">Id</th>
+                  <th class="text-center">Firstname</th>
+                  <th class="text-center">LastName</th>
+                  <th class="text-center">Birthday</th>
+                  <th class="text-center">Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let user of users" >
+                      <td class="center">{{ user.id }}</td>
+                      <td>{{ user.firstName }}</td>
+                      <td>{{ user.lastName }}</td>
+                      <td>{{ user.dateOfBirth | date }}</td>
+                      <td colspan="2">
+                          <button class="btn btn-primary" (click)="editUser(user, template)">Edit</button>
+                          |
+                          <button class="btn btn-danger" (click)="deleteUser(user.id)">Delete</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div> 
+  </div>
+</div>
+<!-- <app-user-dialog></app-user-dialog> -->
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ isNew ? "New User" : "Update User" }}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="userForm" (ngSubmit)="isNew ? createUser() : updateUser()" novalidate>
+      <input type="hidden" formControlName="id" class="form-control" />
+      <div class="form-group">
+        <label>Firstname</label>
+        <input type="text" 
+              formControlName="firstName" 
+              class="form-control" 
+              placeholder="Enter Firstname"
+              #firstNameInput/>
+      </div>
+      <div class="form-group">
+        <label>Lastname</label>
+        <input type="text" 
+              formControlName="lastName" 
+              class="form-control" 
+              placeholder="Enter Lastname"
+              #lastNameInput/>
+      </div>
+      <div class="form-group">
+        <label>Birthday</label>
+        <input type="text" 
+               class="form-control" 
+               formControlName="dateOfBirth" />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</ng-template>
