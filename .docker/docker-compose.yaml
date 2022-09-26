@@ -1,17 +1,31 @@
 version: "3.7"
 services:
-  backend:
-    build: my-backend
-    target: development
+  my-backend:
+    build:
+      context: my-backend
+      target: dev-envs
+    restart: always
     secrets:
       - db-password
+    environment:
+      MYSQL_HOST: db
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - angular-dotnetcore_web_api
+      - dotnetcore_web_api-mysql
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
-    image: mysql
+    build:
+      context: db
+    environment:
+      - MYSQL_DATABASE=example
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     restart: always
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
       interval: 3s
       retries: 5
       start_period: 30s
@@ -24,14 +38,27 @@ services:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 3306
+    networks:
+      - dotnetcore_web_api-mysql
   frontend:
-    build: frontend-app
+    build:
+      context: frontend-app
+      target: dev-envs
     ports:
       - 8080:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - angular-dotnetcore_web_api
     depends_on:
-      - backend
+      - my-backend
+    expose:
+      - 3306
 volumes:
-  db-data:
+  db-data: {}
 secrets:
   db-password:
     file: db/password.txt
+networks:
+  angular-dotnetcore_web_api: {}
+  dotnetcore_web_api-mysql: {}

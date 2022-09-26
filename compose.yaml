@@ -1,0 +1,53 @@
+services:
+  backend:
+    build: my-backend
+    restart: always
+    secrets:
+      - db-password
+    environment:
+      MYSQL_HOST: db
+    networks:
+      - angular-dotnetcore_web_api
+      - dotnetcore_web_api-mysql
+    depends_on:
+      - db:
+          condition: service_healthy
+  db:
+    build: db
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=morpheus
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    networks:
+      - dotnetcore_web_api-mysql
+  frontend:
+    context: frontend-app
+    target: development
+    ports:
+      - 8080:80
+    volumes:
+      - ./frontend-app/src:/code/src
+      - /project/node_modules
+    networks:
+      - angular-dotnetcore_web_api
+    depends_on:
+      - backend
+    expose:
+      - 3306
+volumes:
+  db-data: {}
+secrets:
+  db-password:
+    file: db/password.txt
+networks:
+  angular-dotnetcore_web_api: {}
+  dotnetcore_web_api-mysql: {}
