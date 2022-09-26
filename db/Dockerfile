@@ -1,4 +1,4 @@
-FROM mysql:8.0.30
+FROM mysql
 
 MAINTAINER me
 

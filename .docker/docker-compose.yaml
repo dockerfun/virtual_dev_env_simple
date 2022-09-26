@@ -18,9 +18,6 @@ services:
   db:
     build:
       context: db
-    environment:
-      - MYSQL_DATABASE=example
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     restart: always
     secrets:
       - db-password
@@ -44,8 +41,6 @@ services:
       - angular-dotnetcore_web_api
     depends_on:
       - my-backend
-    expose:
-      - 3306
 volumes:
   db-data: {}
 secrets:
