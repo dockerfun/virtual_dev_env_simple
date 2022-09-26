@@ -1,27 +1,19 @@
 services:
-  my-backend:
-    build:
-      context: my-backend
-      target: dev-envs
+  backend:
+    build: my-backend
     restart: always
     secrets:
       - db-password
     environment:
       MYSQL_HOST: db
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - react-spring
-      - spring-mysql
+      - angular-dotnetcore_web_api
+      - dotnetcore_web_api-mysql
     depends_on:
-      db:
-        condition: service_healthy
+      - db:
+          condition: service_healthy
   db:
-    build:
-      context: db
-    environment:
-      - MYSQL_DATABASE=example
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    build: db
     restart: always
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
@@ -32,16 +24,19 @@ services:
       - db-password
     volumes:
       - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=morpheus
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     networks:
-      - spring-mysql
+      - dotnetcore_web_api-mysql
   frontend:
-    build:
-      context: frontend
-      target: dev-envs
+    context: frontend-app
+    target: development
     ports:
       - 8080:80
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ./frontend-app/src:/code/src
+      - /project/node_modules
     networks:
       - angular-dotnetcore_web_api
     depends_on:
