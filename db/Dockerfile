@@ -2,8 +2,7 @@ FROM mysql:8.0.30
 
 MAINTAINER me
 
-ENV MYSQL_DATABASE=morpheus \ 
-    MYSQL_ROOT_PASSWORD=1234
+ENV MYSQL_DATABASE=morpheus
 
 ADD mysql_dump.sql /docker-entrypoint-initdb.d
 
