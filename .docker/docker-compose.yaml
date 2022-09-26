@@ -3,7 +3,6 @@ services:
   my-backend:
     build:
       context: my-backend
-      target: mybackend:dev
     restart: always
     secrets:
       - db-password
