@@ -22,7 +22,7 @@ services:
     build:
       context: db
     environment:
-      - MYSQL_DATABASE=example
+      - MYSQL_DATABASE=morpheus
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     restart: always
     secrets:
