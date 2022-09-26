@@ -43,7 +43,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - angular-dotnetcore_web_api
+      - frontend-backend
     depends_on:
       - my-backend
     expose:
