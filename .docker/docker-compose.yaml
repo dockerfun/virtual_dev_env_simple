@@ -14,8 +14,7 @@ services:
       - angular-dotnetcore_web_api
       - dotnetcore_web_api-mysql
     depends_on:
-      db:
-        condition: service_healthy
+      - db
   db:
     build:
       context: db
@@ -23,11 +22,6 @@ services:
       - MYSQL_DATABASE=example
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     restart: always
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
-      retries: 5
-      start_period: 30s
     secrets:
       - db-password
     volumes:

@@ -10,16 +10,10 @@ services:
       - angular-dotnetcore_web_api
       - dotnetcore_web_api-mysql
     depends_on:
-      - db:
-          condition: service_healthy
+      - db
   db:
     build: db
     restart: always
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
-      retries: 5
-      start_period: 30s
     secrets:
       - db-password
     volumes:
