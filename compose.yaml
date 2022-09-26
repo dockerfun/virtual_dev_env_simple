@@ -31,7 +31,6 @@ services:
       - dotnetcore_web_api-mysql
   frontend:
     context: frontend-app
-    target: development
     ports:
       - 8080:80
     volumes:

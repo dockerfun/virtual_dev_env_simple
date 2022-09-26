@@ -3,7 +3,6 @@ services:
   my-backend:
     build:
       context: my-backend
-      target: development
     restart: always
     secrets:
       - db-password
@@ -43,7 +42,6 @@ services:
   frontend-app:
     build:
       context: frontend-app
-      target: development
     ports:
       - 8080:80
     volumes:
