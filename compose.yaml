@@ -6,10 +6,12 @@ services:
     secrets:
       - db-password 
     networks:
-      - angular-dotnetcore_web_api
-      - dotnetcore_web_api-mysql
+      - frontend-backend
+      - backend-mysql
     depends_on:
       - db
+    ports:
+      - 5271:5271
     expose:
       - 5271
   db:
@@ -23,7 +25,9 @@ services:
       - MYSQL_DATABASE=morpheus
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     networks:
-      - dotnetcore_web_api-mysql
+      - backend-mysql
+    ports:
+      - 3306:3306
   frontend:
     build: frontend-app
     ports:
@@ -32,7 +36,7 @@ services:
       - ./frontend-app/src:/code/src
       - /project/node_modules
     networks:
-      - angular-dotnetcore_web_api
+      - frontend-backend
     depends_on:
       - backend
 volumes:
@@ -41,5 +45,5 @@ secrets:
   db-password:
     file: db/password.txt
 networks:
-  angular-dotnetcore_web_api: {}
-  dotnetcore_web_api-mysql: {}
+  backend-mysql: {}
+  frontend-backend: {}
