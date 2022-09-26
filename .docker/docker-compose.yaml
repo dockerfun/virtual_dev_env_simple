@@ -11,8 +11,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - react-spring
-      - spring-mysql
+      - angular-dotnetcore_web_api
+      - dotnetcore_web_api-mysql
     depends_on:
       db:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     networks:
-      - spring-mysql
+      - dotnetcore_web_api-mysql
   frontend:
     build:
       context: frontend
@@ -45,7 +45,7 @@ services:
     networks:
       - angular-dotnetcore_web_api
     depends_on:
-      - backend
+      - my-backend
     expose:
       - 3306
 volumes:
