@@ -40,7 +40,7 @@ services:
       - 3306
     networks:
       - dotnetcore_web_api-mysql
-  frontend:
+  frontend-app:
     build:
       context: frontend-app
       target: dev-envs
