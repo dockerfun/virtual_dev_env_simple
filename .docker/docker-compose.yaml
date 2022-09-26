@@ -3,11 +3,11 @@ services:
   my-backend:
     build:
       context: my-backend
+    container_name: my-backend
+    hostname: localhost
     restart: always
     secrets:
       - db-password
-    environment:
-      MYSQL_HOST: db
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -26,8 +26,6 @@ services:
     environment:
       - MYSQL_DATABASE=morpheus
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
-    expose:
-      - 3306
     networks:
       - dotnetcore_web_api-mysql
   frontend-app:

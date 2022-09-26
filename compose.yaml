@@ -1,16 +1,17 @@
+version: "3"
 services:
   backend:
     build: my-backend
     restart: always
     secrets:
-      - db-password
-    environment:
-      MYSQL_HOST: db
+      - db-password 
     networks:
       - angular-dotnetcore_web_api
       - dotnetcore_web_api-mysql
     depends_on:
       - db
+    expose:
+      - 5271
   db:
     build: db
     restart: always
@@ -24,7 +25,7 @@ services:
     networks:
       - dotnetcore_web_api-mysql
   frontend:
-    context: frontend-app
+    build: frontend-app
     ports:
       - 8080:80
     volumes:
@@ -34,8 +35,6 @@ services:
       - angular-dotnetcore_web_api
     depends_on:
       - backend
-    expose:
-      - 3306
 volumes:
   db-data: {}
 secrets:
