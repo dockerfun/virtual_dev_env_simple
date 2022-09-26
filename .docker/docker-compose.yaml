@@ -1,0 +1,58 @@
+version: "3.3"
+services:
+  my-backend:
+    build:
+      context: my-backend
+      target: mybackend:dev
+    restart: always
+    secrets:
+      - db-password
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - frontend-backend
+      - backend-mysql
+    depends_on:
+      - db
+    ports:
+      - "5271:5271"
+    expose:
+      - 5271
+  db:
+    build:
+      context: db
+    environment:
+      - MYSQL_DATABASE=example
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    restart: always
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend-mysql
+    ports: 
+      - "3306:3306"
+    expose:
+      - 3306
+  frontend:
+    build:
+      context: frontend-app
+    ports:
+      - "8080:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - angular-dotnetcore_web_api
+    depends_on:
+      - my-backend
+    expose:
+      - 80
+volumes:
+  db-data: {}
+secrets:
+  db-password:
+    file: db/password.txt
+networks:
+  frontend-backend: {}
+  backend-mysql: {}
