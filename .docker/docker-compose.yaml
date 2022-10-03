@@ -1,11 +1,10 @@
-version: "3.3"
+version: "3.7"
 services:
-  my-backend:
+  backend:
     build:
       context: my-backend
+      target: final
     restart: always
-    secrets:
-      - db-password
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -37,14 +36,14 @@ services:
   frontend:
     build:
       context: frontend-app
-    ports:
-      - "8080:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - frontend-backend
     depends_on:
       - my-backend
+    ports:
+      - "8080:80"
     expose:
       - 80
 volumes:
