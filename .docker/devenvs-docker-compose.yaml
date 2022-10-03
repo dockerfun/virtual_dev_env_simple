@@ -1,0 +1,99 @@
+name: virtual_dev_env_simple-determined_tesla
+services:
+  backend:
+    build:
+      context: C:\repos\dockerfun_simple\virtual_dev_env_simple\my-backend
+      dockerfile: Dockerfile
+      target: final
+    depends_on:
+      db:
+        condition: service_started
+    expose:
+    - "5271"
+    labels:
+      com.docker.devenvironments.compose: "true"
+      com.docker.devenvironments.compose.build: "true"
+      com.docker.devenvironments.name: virtual_dev_env_simple-determined_tesla
+    networks:
+      backend-mysql: null
+      frontend-backend: null
+    ports:
+    - mode: ingress
+      target: 5271
+      published: "5271"
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      bind:
+        create_host_path: true
+  db:
+    build:
+      context: C:\repos\dockerfun_simple\virtual_dev_env_simple\db
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_DATABASE: morpheus
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-password
+    expose:
+    - "3306"
+    labels:
+      com.docker.devenvironments.compose: "true"
+      com.docker.devenvironments.compose.build: "true"
+      com.docker.devenvironments.name: virtual_dev_env_simple-determined_tesla
+    networks:
+      backend-mysql: null
+    ports:
+    - mode: ingress
+      target: 3306
+      published: "3306"
+      protocol: tcp
+    restart: always
+    secrets:
+    - source: db-password
+    volumes:
+    - type: volume
+      source: db-data
+      target: /var/lib/mysql
+      volume: {}
+  frontend:
+    build:
+      context: C:\repos\dockerfun_simple\virtual_dev_env_simple\frontend-app
+      dockerfile: Dockerfile
+    depends_on:
+      my-backend:
+        condition: service_started
+    expose:
+    - "80"
+    labels:
+      com.docker.devenvironments.compose: "true"
+      com.docker.devenvironments.compose.build: "true"
+      com.docker.devenvironments.name: virtual_dev_env_simple-determined_tesla
+    networks:
+      frontend-backend: null
+    ports:
+    - mode: ingress
+      target: 80
+      published: "8080"
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      bind:
+        create_host_path: true
+networks:
+  backend-mysql:
+    name: virtual_dev_env_simple-determined_tesla_backend-mysql
+  default:
+    name: virtual_dev_env_simple-determined_tesla_default
+  frontend-backend:
+    name: virtual_dev_env_simple-determined_tesla_frontend-backend
+volumes:
+  db-data:
+    name: virtual_dev_env_simple-determined_tesla_db-data
+secrets:
+  db-password:
+    name: virtual_dev_env_simple-determined_tesla_db-password
+    file: C:\repos\dockerfun_simple\virtual_dev_env_simple\db\password.txt
