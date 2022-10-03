@@ -5,14 +5,20 @@ services:
       context: C:\repos\dockerfun_simple\virtual_dev_env_simple\my-backend
       dockerfile: Dockerfile
       target: final
+    command:
+    - infinity
     depends_on:
       db:
         condition: service_started
+    entrypoint:
+    - sleep
     expose:
     - "5271"
+    init: true
     labels:
       com.docker.devenvironments.compose: "true"
       com.docker.devenvironments.compose.build: "true"
+      com.docker.devenvironments.container: "true"
       com.docker.devenvironments.name: virtual_dev_env_simple-determined_tesla
     networks:
       backend-mysql: null
@@ -23,12 +29,19 @@ services:
       published: "5271"
       protocol: tcp
     restart: always
+    stop_signal: SIGKILL
     volumes:
     - type: bind
       source: /var/run/docker.sock
       target: /var/run/docker.sock
       bind:
         create_host_path: true
+    - type: bind
+      source: C:\repos\dockerfun_simple\virtual_dev_env_simple
+      target: /com.docker.devenvironments.code
+    - type: volume
+      source: vsCodeServerVolume-virtual_dev_env_simple-determined_tesla-backend
+      target: /home/vscode
   db:
     build:
       context: C:\repos\dockerfun_simple\virtual_dev_env_simple\db
@@ -93,6 +106,8 @@ networks:
 volumes:
   db-data:
     name: virtual_dev_env_simple-determined_tesla_db-data
+  vsCodeServerVolume-virtual_dev_env_simple-determined_tesla-backend:
+    name: vsCodeServerVolume-virtual_dev_env_simple-determined_tesla-backend
 secrets:
   db-password:
     name: virtual_dev_env_simple-determined_tesla_db-password
